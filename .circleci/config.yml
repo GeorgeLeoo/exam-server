@@ -25,9 +25,6 @@ jobs:
             - node_modules
           key: dependencies_exam_server
       - run:
-          name: Build
-          command: yarn build
-      - run:
           name: Prepare shell commands
           # shell chmod +x 赋予执行权限
           # 执行shell脚本
