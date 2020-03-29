@@ -20,7 +20,7 @@ class PublicController {
   
   test (ctx) {
     const response = new Response(ctx)
-    response.send(200, '', { success: 200 })
+    response.send(200, 'success', { success: 200 })
   }
 }
 
