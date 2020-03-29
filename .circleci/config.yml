@@ -13,7 +13,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependencies_exam_management
+            - dependencies_exam_server
       - run:
           name: Install Expect
           command: sudo apt-get update && sudo apt-get install expect
@@ -23,7 +23,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: dependencies_exam_management
+          key: dependencies_exam_server
       - run:
           name: Build
           command: yarn build:prod
