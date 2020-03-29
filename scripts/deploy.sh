@@ -2,7 +2,7 @@
 
 set timeout 2000
 
-spawn scp -r ./ root@139.159.201.22:/root/www
+spawn scp -r ./ root@139.159.201.22:/root/www/exam-server
 
  expect {
 
