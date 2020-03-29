@@ -20,6 +20,6 @@ expect "100%"
 
 expect eof
 
-cd /root/www/exam-server
-pm2 start server.bundle.js
+#sudo cd /root/www/exam-server
+#pm2 start server.bundle.js
 
