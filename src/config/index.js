@@ -1,4 +1,4 @@
-const DB_URL = '"mongodb://root:123loveyou,,@139.159.201.22:12306/exam?authSource=admin"'
+const DB_URL = 'mongodb://root:123loveyou,@139.159.201.22:12306/exam?authSource=admin'
 const REDIS = {
   host: '139.159.201.22',
   port: 15001,
