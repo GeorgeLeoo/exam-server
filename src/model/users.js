@@ -1,7 +1,7 @@
-const db = require('./../db/conn')
+import db from './../db/conn'
 const Schema = db.Schema
-const Admins = new Schema({
-  no: {
+const Users = new Schema({
+  username: {
     type: String,
     unique: true
   },
@@ -36,4 +36,4 @@ const Admins = new Schema({
   }
 })
 
-module.exports = db.model('Admins', Admins)
+module.exports = db.model('Users', Users)
