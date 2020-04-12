@@ -9,10 +9,16 @@ import {
   login,
   register,
   getUserInfos,
-  openOrCloseUser
+  openOrCloseUser,
+  updateUser
 } from '../db/moduels/UserDB'
 
 class UserController {
+  /**
+   * 登录
+   * @param ctx
+   * @returns {Promise<void>}
+   */
   async login (ctx) {
     const { body } = ctx.request
     const { username, password } = body
@@ -29,6 +35,11 @@ class UserController {
     response.send(code, msg, data)
   }
   
+  /**
+   * 注册
+   * @param ctx
+   * @returns {Promise<void>}
+   */
   async register (ctx) {
     const { body } = ctx.request
     const { username, password, rePassword, email } = body
@@ -65,6 +76,11 @@ class UserController {
     response.send(code, msg, data)
   }
   
+  /**
+   * 忘记密码
+   * @param ctx
+   * @returns {Promise<void>}
+   */
   async forget (ctx) {
     const { body } = ctx.request
     try {
@@ -83,30 +99,68 @@ class UserController {
     }
   }
   
+  /**
+   * 查询某一用户信息
+   * @param ctx
+   * @returns {Promise<void>}
+   */
   async info (ctx) {
-    const { username } = ctx.request.query
+    const { uid } = ctx.request.query
     const response = new Response(ctx)
-    console.log(username)
+    if (!uid) {
+      response.send(ResponseCode.CLIENT_ERROR, '您还未登录')
+      return
+    }
+    let { code, msg, data } = await getUserInfo(uid)
+    response.send(code, msg, data)
+  }
+  
+  /**
+   * 查询所有用户信息
+   * @param ctx
+   * @returns {Promise<void>}
+   */
+  async getUserInfos (ctx) {
+    const response = new Response(ctx)
+    const { username, name, gender, limit, page } = ctx.request.query
+    if (!limit && limit > 0) {
+      response.send(ResponseCode.CLIENT_ERROR, '页面大小必须大于0')
+      return
+    }
+    if (!page) {
+      response.send(ResponseCode.CLIENT_ERROR, '当前页面必须大于0')
+      return
+    }
+    // 查询条件，默认是没有被删除的
+    const condition = { isDelete: 0 }
+    // 公告内容存在时，将属性添加到查询条件里
+    username && (condition.username = new RegExp(username))
+    name && (condition.name = new RegExp(name))
+    gender && (condition.gender = gender)
+  
+    const query = {
+      condition,
+      page: { limit, page },
+    }
+    let { code, msg, data } = await getUserInfos(query)
+    response.send(code, msg, data)
+  }
+  
+  /**
+   * 创建用户
+   * @param ctx
+   * @returns {Promise<void>}
+   */
+  async createUser (ctx) {
+    const { body } = ctx.request
+    const { username,name, password, rePassword, email, gender, phone } = body
+    const response = new Response(ctx)
     if (!username) {
       response.send(ResponseCode.CLIENT_ERROR, '账号不能为空')
       return
     }
-    let { code, msg, data } = await getUserInfo(username)
-    response.send(code, msg, data)
-  }
-  
-  async getUserInfos (ctx) {
-    const response = new Response(ctx)
-    let { code, msg, data } = await getUserInfos()
-    response.send(code, msg, data)
-  }
-  
-  async createUser (ctx) {
-    const { body } = ctx.request
-    const { username, password, rePassword, email, gender, phone } = body
-    const response = new Response(ctx)
-    if (!username) {
-      response.send(ResponseCode.CLIENT_ERROR, '账号不能为空')
+    if (!name) {
+      response.send(ResponseCode.CLIENT_ERROR, '姓名不能为空')
       return
     }
     if (!password) {
@@ -133,11 +187,11 @@ class UserController {
       response.send(ResponseCode.CLIENT_ERROR, '手机号不能为空')
       return
     }
-    if (await hasAdminUsername(username)) {
+    if (await hasUsername(username)) {
       response.send(ResponseCode.CLIENT_ERROR, '用户名已存在')
       return
     }
-    if (await hasAdminEmail(email)) {
+    if (await hasUserEmail(email)) {
       response.send(ResponseCode.CLIENT_ERROR, '邮箱已存在')
       return
     }
@@ -145,10 +199,72 @@ class UserController {
     response.send(code, msg, data)
   }
   
+  /**
+   * 修改账号状态【启动、关闭】
+   * @param ctx
+   * @returns {Promise<void>}
+   */
   async openOrCloseUser (ctx) {
-    const { _id, status } = ctx.request.query
+    const { _id, state } = ctx.request.query
     const response = new Response(ctx)
-    let { code, msg, data } = await openOrCloseUser({ _id, status })
+    let { code, msg, data } = await openOrCloseUser({ _id, state })
+    response.send(code, msg, data)
+  }
+  
+  /**
+   * 更新用户信息
+   * @param ctx
+   * @returns {Promise<void>}
+   */
+  async updateUser (ctx) {
+    const response = new Response(ctx)
+    const { _id, username, name, password, rePassword, oldEmail, email, gender, phone } = ctx.request.body
+    if (!username) {
+      response.send(ResponseCode.CLIENT_ERROR, '账号不能为空')
+      return
+    }
+    if (!name) {
+      response.send(ResponseCode.CLIENT_ERROR, '姓名不能为空')
+      return
+    }
+    if (!email) {
+      response.send(ResponseCode.CLIENT_ERROR, '邮箱不能为空')
+      return
+    }
+    if (!(gender === 0 || gender === 1)) {
+      response.send(ResponseCode.CLIENT_ERROR, '请选择性别')
+      return
+    }
+    if (!phone) {
+      response.send(ResponseCode.CLIENT_ERROR, '手机号不能为空')
+      return
+    }
+  
+    if(oldEmail !== email) {
+      if (await hasUserEmail(email)) {
+        response.send(ResponseCode.CLIENT_ERROR, '邮箱已存在')
+        return
+      }
+    }
+    const body = {
+      query: { _id },
+      update: { username, name, email, gender, phone }
+    }
+    if (password || rePassword) {
+      if (!password) {
+        response.send(ResponseCode.CLIENT_ERROR, '密码不能为空')
+        return
+      }
+      if (!rePassword) {
+        response.send(ResponseCode.CLIENT_ERROR, '确认密码不能为空')
+        return
+      }
+      if (rePassword !== password) {
+        response.send(ResponseCode.CLIENT_ERROR, '两次密码不一致')
+        return
+      }
+    }
+    let { code, msg, data } = await updateUser(body)
     response.send(code, msg, data)
   }
 }

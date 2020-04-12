@@ -1,16 +1,21 @@
 import db from './../db/conn'
 const Schema = db.Schema
+
+/**
+ * 考生
+ */
 const Users = new Schema({
   username: {
     type: String,
     unique: true
   },
+  name: String,
   password: String,
   email: {
     type: String,
     unique: true
   },
-  gender: String,
+  gender: Number,
   avatar: String,
   phone: String,
   state: {

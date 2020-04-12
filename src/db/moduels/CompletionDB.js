@@ -1,18 +1,18 @@
-import Subjects from "../../model/subjects";
+import Completions from "../../model/completions";
 import ResponseCode from "../../utils/ResponseCode";
 
 /**
- * 查询科目信息
+ * 查询填空题
  * @param query
  * @returns {Promise<unknown>}
  */
-export const getSubjects = function (query) {
+export const getCompletions = function (query) {
 	return new Promise((resolve) => {
-		Subjects.find(query.condition, (err, subjects) => {
+		Completions.find(query.condition, (err, completions) => {
 			if (err) {
 				resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 			}
-			resolve({ code: ResponseCode.SUCCESS, data: subjects });
+			resolve({ code: ResponseCode.SUCCESS, data: completions });
 		})
 			.limit(parseInt(query.page.limit))
 			.skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
@@ -21,13 +21,13 @@ export const getSubjects = function (query) {
 };
 
 /**
- * 创建科目信息
+ * 创建填空题
  * @param body
  * @returns {Promise<unknown>}
  */
-export const createSubject = function (body) {
+export const createCompletion = function (body) {
 	return new Promise((resolve) => {
-		Subjects.insertMany(body, (err, subjects) => {
+		Completions.insertMany(body, (err, completions) => {
 			if (err) {
 				resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 			}
@@ -37,28 +37,28 @@ export const createSubject = function (body) {
 };
 
 /**
- * 更新科目信息
+ * 更新填空题
  * @param body
  * @returns {Promise<unknown>}
  */
-export const updateSubject = function (body) {
+export const updateCompletion = function (body) {
 	return new Promise((resolve) => {
-		Subjects.updateOne(
+		Completions.updateOne(
 			body.query,
 			{ $set: body.update },
-			(err, subjects) => {
+			(err, completions) => {
 				if (err) {
 					resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 				}
-				if (subjects.nModified === 1) {
+				if (completions.nModified === 1) {
 					resolve({
-						code: ResponseCode.SUCCESS,
+						code: ResponseCode.SERVICE_ERROR,
 						msg: "更新成功",
 						data: [],
 					});
 				} else {
 					resolve({
-						code: ResponseCode.SERVICE_ERROR,
+						code: ResponseCode.SUCCESS,
 						msg: "更新失败",
 						data: [],
 					});
@@ -69,20 +69,20 @@ export const updateSubject = function (body) {
 };
 
 /**
- * 删除科目信息
+ * 删除填空题
  * @param query
  * @returns {Promise<unknown>}
  */
-export const deleteSubject = function (query) {
+export const deleteCompletion = function (query) {
 	return new Promise((resolve) => {
-		Subjects.updateOne(
+		Completions.updateOne(
 			{ _id: query._id },
 			{ $set: { isDelete: 1 } },
-			(err, subjects) => {
+			(err, completions) => {
 				if (err) {
 					resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 				}
-				if (subjects.nModified === 1) {
+				if (completions.nModified === 1) {
 					resolve({
 						code: ResponseCode.SUCCESS,
 						msg: "删除成功",

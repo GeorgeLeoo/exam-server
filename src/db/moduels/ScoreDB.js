@@ -1,18 +1,18 @@
-import Subjects from "../../model/subjects";
+import Scores from "../../model/scores";
 import ResponseCode from "../../utils/ResponseCode";
 
 /**
- * 查询科目信息
+ * 查询分数
  * @param query
  * @returns {Promise<unknown>}
  */
-export const getSubjects = function (query) {
+export const getScores = function (query) {
 	return new Promise((resolve) => {
-		Subjects.find(query.condition, (err, subjects) => {
+		Scores.find(query.condition, (err, scores) => {
 			if (err) {
 				resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 			}
-			resolve({ code: ResponseCode.SUCCESS, data: subjects });
+			resolve({ code: ResponseCode.SUCCESS, data: scores });
 		})
 			.limit(parseInt(query.page.limit))
 			.skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
@@ -21,13 +21,13 @@ export const getSubjects = function (query) {
 };
 
 /**
- * 创建科目信息
+ * 创建分数
  * @param body
  * @returns {Promise<unknown>}
  */
-export const createSubject = function (body) {
+export const createScore = function (body) {
 	return new Promise((resolve) => {
-		Subjects.insertMany(body, (err, subjects) => {
+		Scores.insertMany(body, (err, scores) => {
 			if (err) {
 				resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 			}
@@ -37,52 +37,48 @@ export const createSubject = function (body) {
 };
 
 /**
- * 更新科目信息
+ * 更新分数
  * @param body
  * @returns {Promise<unknown>}
  */
-export const updateSubject = function (body) {
+export const updateScore = function (body) {
 	return new Promise((resolve) => {
-		Subjects.updateOne(
-			body.query,
-			{ $set: body.update },
-			(err, subjects) => {
-				if (err) {
-					resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
-				}
-				if (subjects.nModified === 1) {
-					resolve({
-						code: ResponseCode.SUCCESS,
-						msg: "更新成功",
-						data: [],
-					});
-				} else {
-					resolve({
-						code: ResponseCode.SERVICE_ERROR,
-						msg: "更新失败",
-						data: [],
-					});
-				}
+		Scores.updateOne(body.query, { $set: body.update }, (err, scores) => {
+			if (err) {
+				resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 			}
-		);
+			if (scores.nModified === 1) {
+				resolve({
+					code: ResponseCode.SERVICE_ERROR,
+					msg: "更新成功",
+					data: [],
+				});
+			} else {
+				resolve({
+					code: ResponseCode.SUCCESS,
+					msg: "更新失败",
+					data: [],
+				});
+			}
+		});
 	});
 };
 
 /**
- * 删除科目信息
+ * 删除分数
  * @param query
  * @returns {Promise<unknown>}
  */
-export const deleteSubject = function (query) {
+export const deleteScore = function (query) {
 	return new Promise((resolve) => {
-		Subjects.updateOne(
+		Scores.updateOne(
 			{ _id: query._id },
 			{ $set: { isDelete: 1 } },
-			(err, subjects) => {
+			(err, scores) => {
 				if (err) {
 					resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 				}
-				if (subjects.nModified === 1) {
+				if (scores.nModified === 1) {
 					resolve({
 						code: ResponseCode.SUCCESS,
 						msg: "删除成功",

@@ -1,8 +1,27 @@
+/**
+ * 查询 query
+ * 更新 body = {query, update}
+ * 插入 insert
+ * 真删除 body = { query, remove }
+ */
 import Admins from '../../model/admins'
 import ResponseCode from '../../utils/ResponseCode'
 import Utils from '../../utils/Utils'
 import MongoCode from '../../utils/MongoCode'
 import StatusCode from './../../utils/StatusCode'
+
+/**
+ * 查询总数量
+ * @param condition
+ * @returns {Promise<unknown>}
+ */
+const getCount = function (condition) {
+  return new Promise(resolve => {
+    Admins.countDocuments(condition, function (err, count) {
+      resolve(count)
+    })
+  })
+}
 
 /**
  * 登录
@@ -19,7 +38,11 @@ export const login = function (query) {
         if (Utils.isEmptyObject(admins)) {
           resolve({ code: ResponseCode.CLIENT_ERROR, msg: '账号或密码不正确' })
         }
+        if (admins.state === 1) {
+          resolve({ code: ResponseCode.SUCCESS, msg: '该账号已锁定' })
+        }
         const data = {
+          uid: admins._id,
           token: Utils.getToken(_id)
         }
         resolve({ code: ResponseCode.SUCCESS, data })
@@ -89,34 +112,53 @@ export const hasAdminEmail = function (email) {
 
 /**
  * 获取管理员信息
- * @param username
+ * @param uid
  * @returns {Promise<unknown>}
  */
-export const getAdminUserInfo = function (username) {
+export const getAdminUserInfo = function (uid) {
   return new Promise(resolve => {
-    Admins.findOne({ username }, (err, admins) => {
-      if (err) {
-        resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+    Admins.findById(uid, { __v: 0, isDelete: 0, password: 0 }, (err, admins) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        resolve({ code: ResponseCode.SUCCESS, data: { user: admins } })
       }
-      const user = {
-        _id: admins._id,
-        username: admins.username,
-        email: admins.email,
-        state: admins.state,
-        createdAt: admins.createdAt
-      }
-      resolve({ code: ResponseCode.SUCCESS, data: { user } })
-    })
+    )
   })
 }
 
 /**
  * 获取所有管理员信息
+ * @param query
  * @returns {Promise<unknown>}
  */
-export const getAdminUserInfos = function () {
+export const getAdminUserInfos = function (query) {
+  return new Promise(async resolve => {
+    const count = await getCount(query.condition)
+    Admins.find(query.condition, { isDelete: 0, __v: 0, password: 0 })
+      .limit(parseInt(query.page.limit))
+      .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
+      .sort({ _id: -1 })
+      .exec((err, admins) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: admins,
+            total: count
+          }
+        })
+      })
+  })
+}
+/**
+ * 通过用户名获取管理员信息
+ * @returns {Promise<unknown>}
+ */
+export const getAdminInfoByUsername = function (username) {
   return new Promise(resolve => {
-    Admins.find({}, (err, admins) => {
+    Admins.findOne({ username }, { _id: 1}, (err, admins) => {
       if (err) {
         resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
       }
@@ -132,13 +174,33 @@ export const getAdminUserInfos = function () {
  */
 export const openOrCloseAdminUser = function (query) {
   return new Promise((resolve => {
-      Admins.updateOne({ _id: query._id }, { $set: { status: query.status } }, (err, notices) => {
+      Admins.updateOne({ _id: query._id }, { $set: { state: query.state } }, (err, admins) => {
         if (err) {
           resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
         }
-        resolve({ code: ResponseCode.SUCCESS, msg: StatusCode[query.status] + '成功', data: [] })
+        resolve({ code: ResponseCode.SUCCESS, msg: StatusCode[query.state] + '成功', data: [] })
       })
     }
   ))
 }
 
+/**
+ * 更新用户
+ * @param body
+ * @returns {Promise<unknown>}
+ */
+export const updateAdminUser = function (body) {
+  return new Promise((resolve => {
+      Admins.updateOne(body.query, { $set: body.update }, (err, admins) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        if (admins.nModified === 1) {
+          resolve({ code: ResponseCode.SUCCESS, msg: '更新成功', data: [] })
+        } else {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: '更新失败', data: [] })
+        }
+      })
+    }
+  ))
+}

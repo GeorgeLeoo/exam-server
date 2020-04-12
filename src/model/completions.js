@@ -2,12 +2,18 @@ import db from './../db/conn'
 const Schema = db.Schema
 
 /**
- * 科目
+ * 填空题
  */
-const Subjects = new Schema({
-  name: String,
-  desc: String,
-  author: String,
+const Completions = new Schema({
+  question: {
+    type: String
+  },
+  subjectId: String,
+  knowledgePoint: String,
+  correctAnswer: Array,
+  explanation: String,
+  difficulty: String,
+  teacherId: String,
   /**
    * 数据状态
    * 0 表示存在
@@ -27,4 +33,4 @@ const Subjects = new Schema({
   }
 })
 
-module.exports = db.model('Subjects', Subjects)
+module.exports = db.model('Completion', Completions)

@@ -5,6 +5,19 @@ import MongoCode from '../../utils/MongoCode'
 import StatusCode from '../../utils/StatusCode'
 
 /**
+ * 查询总数量
+ * @param condition
+ * @returns {Promise<unknown>}
+ */
+const getCount = function (condition) {
+  return new Promise(resolve => {
+    Users.countDocuments(condition, function (err, count) {
+      resolve(count)
+    })
+  })
+}
+
+/**
  * 登录
  * @param query
  * @returns {Promise<{code, msg. data}>}
@@ -19,7 +32,11 @@ export const login = function (query) {
         if (Utils.isEmptyObject(users)) {
           resolve({ code: ResponseCode.CLIENT_ERROR, msg: '账号或密码不正确' })
         }
+        if (users.state === 1) {
+          resolve({ code: ResponseCode.SUCCESS, msg: '该账号已锁定' })
+        }
         const data = {
+          uid: users._id,
           token: Utils.getToken(_id)
         }
         resolve({ code: ResponseCode.SUCCESS, data })
@@ -43,7 +60,7 @@ export const register = function (insert) {
           resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
         }
       }
-      resolve({ code: ResponseCode.SUCCESS, data: [] })
+      resolve({ code: ResponseCode.SUCCESS, msg: '添加成功', data: [] })
     })
   }))
 }
@@ -89,21 +106,15 @@ export const hasUserEmail = function (email) {
 
 /**
  * 获取考生信息
- * @param username
+ * @param uid
  * @returns {Promise<unknown>}
  */
-export const getUserInfo = function (username) {
+export const getUserInfo = function (uid) {
   return new Promise(resolve => {
-    Users.findOne({ username }, (err, users) => {
+    Users.findById(uid, { __v: 0, isDelete: 0, password: 0 },(err, users) => {
       if (err) {
         resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
-      }
-      const user = {
-        _id: users._id,
-        username: users.username,
-        email: users.email,
-        state: users.state,
-        createdAt: users.createdAt
+        return
       }
       resolve({ code: ResponseCode.SUCCESS, data: { user } })
     })
@@ -114,13 +125,38 @@ export const getUserInfo = function (username) {
  * 获取所有考生信息
  * @returns {Promise<unknown>}
  */
-export const getUserInfos = function () {
+export const getUserInfos = function (query) {
+  return new Promise(async resolve => {
+    const count = await getCount(query.condition)
+    Users.find(query.condition, { isDelete: 0, __v: 0, password: 0 })
+      .limit(parseInt(query.page.limit))
+      .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
+      .sort({ _id: -1 })
+      .exec((err, users) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: users,
+            total: count
+          }
+        })
+      })
+  })
+}
+
+/**
+ * 通过用户名获取管理员信息
+ * @returns {Promise<unknown>}
+ */
+export const getUserInfoByUsername = function (username) {
   return new Promise(resolve => {
-    Users.find({}, (err, users) => {
+    Users.findOne({ username }, { _id: 1}, (err, admins) => {
       if (err) {
         resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
       }
-      resolve({ code: ResponseCode.SUCCESS, data: users })
+      resolve({ code: ResponseCode.SUCCESS, data: admins })
     })
   })
 }
@@ -133,11 +169,32 @@ export const getUserInfos = function () {
  */
 export const openOrCloseUser = function (query) {
   return new Promise((resolve => {
-      Users.updateOne({ _id: query._id }, { $set: { status: query.status } }, (err, notices) => {
+      Users.updateOne({ _id: query._id }, { $set: { state: query.state } }, (err, users) => {
         if (err) {
           resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
         }
-        resolve({ code: ResponseCode.SUCCESS, msg: StatusCode[query.status] + '成功', data: [] })
+        resolve({ code: ResponseCode.SUCCESS, msg: StatusCode[query.state] + '成功', data: [] })
+      })
+    }
+  ))
+}
+
+/**
+ * 更新用户
+ * @param body
+ * @returns {Promise<unknown>}
+ */
+export const updateUser = function (body) {
+  return new Promise((resolve => {
+      Users.updateOne(body.query, { $set: body.update }, (err, users) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        if (users.nModified === 1) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: '更新成功', data: [] })
+        } else {
+          resolve({ code: ResponseCode.SUCCESS, msg: '更新失败', data: [] })
+        }
       })
     }
   ))

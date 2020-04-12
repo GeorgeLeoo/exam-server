@@ -2,14 +2,17 @@ import db from './../db/conn'
 const Schema = db.Schema
 
 /**
- * 公告
+ * 分数
  */
-const Notices = new Schema({
-  admin: {
-    type: Schema.Types.ObjectId,
-    ref: 'Admins'
-  },
-  content: String,
+const Scores = new Schema({
+  studentId: String,
+  paperId: String,
+  startTime: Number,
+  endTime: Number,
+  diffTime: Number,
+  score: Number,
+  correctNumber: Number,
+  status: Number,
   /**
    * 数据状态
    * 0 表示存在
@@ -25,8 +28,8 @@ const Notices = new Schema({
    */
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: new Date()
   }
 })
 
-module.exports = db.model('Notices', Notices)
+module.exports = db.model('Scores', Scores)
