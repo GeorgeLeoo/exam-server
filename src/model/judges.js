@@ -8,12 +8,18 @@ const Judges = new Schema({
   question: {
     type: String
   },
-  subjectId: String,
+  subjectId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Subjects'
+  },
   knowledgePoint: String,
-  correctAnswer: Array,
+  correctAnswer: Number,
   explanation: String,
   difficulty: String,
-  teacherId: String,
+  admin: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admins'
+  },
   /**
    * 数据状态
    * 0 表示存在
@@ -33,4 +39,4 @@ const Judges = new Schema({
   }
 })
 
-module.exports = db.model('Judge', Judges)
+module.exports = db.model('Judges', Judges)

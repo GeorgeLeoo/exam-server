@@ -5,9 +5,15 @@ const Schema = db.Schema
  * 科目
  */
 const Subjects = new Schema({
+  // 科目名称
   name: String,
+  // 科目描述
   desc: String,
-  author: String,
+  // 作者id
+  admin: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admins'
+  },
   /**
    * 数据状态
    * 0 表示存在

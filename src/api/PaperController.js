@@ -15,7 +15,7 @@ class PaperController {
 	 */
 	async getPaper(ctx) {
 		const response = new Response(ctx);
-		const { content, author, limit, page } = ctx.request.query;
+		const { paperName, subject, paperType, testType, limit, page } = ctx.request.query;
 		if (!limit && limit > 0) {
 			response.send(ResponseCode.CLIENT_ERROR, "页面大小必须大于0");
 			return;
@@ -25,8 +25,10 @@ class PaperController {
 			return;
 		}
 		const condition = { isDelete: 0 };
-		content && (condition.content = name);
-		author && (condition.author = author);
+    paperName && (condition.paperName = new RegExp(paperName));
+    subject && (condition.subject = subject);
+    paperType && (condition.paperType = paperType);
+    testType && (condition.testType = testType);
 		let { code, msg, data } = await getPapers({
 			condition,
 			page: { limit, page },
@@ -42,10 +44,10 @@ class PaperController {
 	async createPaper(ctx) {
 		const response = new Response(ctx);
 		const {
-			adminId,
+			admin,
 			testType,
-			name,
-			subjectId,
+      paperName,
+			subject,
 			startTime,
 			endTime,
 			durationTime,
@@ -64,16 +66,21 @@ class PaperController {
 			completionScore,
 			afqNumber,
 			afqScore,
+      single,
+      multiple,
+      judge,
+      completion,
+      afq
 		} = ctx.request.body;
-		if (!content) {
-			response.send(ResponseCode.CLIENT_ERROR, "试卷内容不能为空");
-			return;
-		}
+		// if (!content) {
+		// 	response.send(ResponseCode.CLIENT_ERROR, "试卷内容不能为空");
+		// 	return;
+		// }
 		let { code, msg, data } = await createPaper({
-			adminId,
+			admin,
 			testType,
-			name,
-			subjectId,
+			paperName,
+			subject,
 			startTime,
 			endTime,
 			durationTime,
@@ -92,6 +99,11 @@ class PaperController {
 			completionScore,
 			afqNumber,
 			afqScore,
+      single,
+      multiple,
+      judge,
+      completion,
+      afq
 		});
 		response.send(code, msg, data);
 	}
@@ -107,8 +119,8 @@ class PaperController {
 			_id,
 			adminId,
 			testType,
-			name,
-			subjectId,
+			paperName,
+			subject,
 			startTime,
 			endTime,
 			durationTime,
@@ -127,14 +139,19 @@ class PaperController {
 			completionScore,
 			afqNumber,
 			afqScore,
+      single,
+      multiple,
+      judge,
+      completion,
+      afq
 		} = ctx.request.body;
 		const body = {
 			query: { _id },
 			update: {
 				adminId,
 				testType,
-				name,
-				subjectId,
+				paperName,
+				subject,
 				startTime,
 				endTime,
 				durationTime,
@@ -153,6 +170,11 @@ class PaperController {
 				completionScore,
 				afqNumber,
 				afqScore,
+        single,
+        multiple,
+        judge,
+        completion,
+        afq
 			},
 		};
 		let { code, msg, data } = await updatePaper(body);

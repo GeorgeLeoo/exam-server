@@ -6,7 +6,10 @@ const Schema = db.Schema
  */
 const Multiples = new Schema({
   question: String,
-  subjectId: String,
+  subjectId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Subjects'
+  },
   knowledgePoint: String,
   pic: String,
   a: String,
@@ -16,7 +19,10 @@ const Multiples = new Schema({
   correctAnswer: Array,
   explanation: String,
   difficulty: String,
-  adminId: String,
+  admin: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admins'
+  },
   /**
    * 数据状态
    * 0 表示存在
@@ -36,4 +42,4 @@ const Multiples = new Schema({
   }
 })
 
-module.exports = db.model('Multiple', Multiples)
+module.exports = db.model('Multiples', Multiples)

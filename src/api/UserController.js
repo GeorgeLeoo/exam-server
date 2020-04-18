@@ -179,8 +179,8 @@ class UserController {
       response.send(ResponseCode.CLIENT_ERROR, '邮箱不能为空')
       return
     }
-    if (!gender) {
-      response.send(ResponseCode.CLIENT_ERROR, '性别不能为空')
+    if (!(gender === 0 || gender === 1)) {
+      response.send(ResponseCode.CLIENT_ERROR, '请选择性别')
       return
     }
     if (!phone) {
@@ -195,7 +195,7 @@ class UserController {
       response.send(ResponseCode.CLIENT_ERROR, '邮箱已存在')
       return
     }
-    let { code, msg, data } = await register({ username, password, email })
+    let { code, msg, data } = await register({ username, name, password, rePassword, email, gender, phone })
     response.send(code, msg, data)
   }
   
@@ -205,7 +205,7 @@ class UserController {
    * @returns {Promise<void>}
    */
   async openOrCloseUser (ctx) {
-    const { _id, state } = ctx.request.query
+    const { _id, state } = ctx.request.body
     const response = new Response(ctx)
     let { code, msg, data } = await openOrCloseUser({ _id, state })
     response.send(code, msg, data)

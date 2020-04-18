@@ -1,32 +1,59 @@
 import db from './../db/conn'
+
 const Schema = db.Schema
 
 /**
  * 试卷
  */
 const Papers = new Schema({
-  adminId: String,
-  testType: String,
-  name: String,
-  subjectId: String,
+  admin: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admins'
+  },
+  testType: Number, // 0 模拟考试， 1 正式考试
+  paperName: String,
+  subject: {
+    type: Schema.Types.ObjectId,
+    ref: 'Subjects'
+  },
   startTime: String,
   endTime: String,
   durationTime: String,
-  difficulty: String,
+  difficulty: Number,
   attention: String,
-  paperType: String,
-  count: String,
-  total: String,
-  singleNumber: String,
-  singleScore: String,
-  multipleNumber: String,
-  multipleScore: String,
-  judgeNumber: String,
-  judgeScore: String,
-  completionNumber: String,
-  completionScore: String,
-  afqNumber: String,
-  afqScore: String,
+  paperType: Number,  // 0 固定组卷，1 随机组卷
+  count: Number,
+  total: Number,
+  singleNumber: Number,
+  singleScore: Number,
+  multipleNumber: Number,
+  multipleScore: Number,
+  judgeNumber: Number,
+  judgeScore: Number,
+  completionNumber: Number,
+  completionScore: Number,
+  afqNumber: Number,
+  afqScore: Number,
+  single: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Singles'
+  }],
+  multiple: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Multiples'
+  }],
+  judge: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Judges'
+  }],
+  completion: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Completions'
+  }],
+  afq: [{
+    type: Schema.Types.ObjectId,
+    ref: 'AFQs'
+  }],
   /**
    * 数据状态
    * 0 表示存在

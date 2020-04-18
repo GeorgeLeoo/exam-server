@@ -10,7 +10,7 @@ class AFQController {
 	 */
 	async getAFQ(ctx) {
 		const response = new Response(ctx);
-		const { content, author, limit, page } = ctx.request.query;
+		const { subjectId, question, limit, page } = ctx.request.query;
 		if (!limit && limit > 0) {
 			response.send(ResponseCode.CLIENT_ERROR, "页面大小必须大于0");
 			return;
@@ -20,8 +20,8 @@ class AFQController {
 			return;
 		}
 		const condition = { isDelete: 0 };
-		content && (condition.content = name);
-		author && (condition.author = author);
+    question && (condition.question = new RegExp(question))
+    subjectId && (condition.subjectId = subjectId)
 		let { code, msg, data } = await getAFQs({
 			condition,
 			page: { limit, page },
@@ -43,9 +43,9 @@ class AFQController {
 			correctAnswer,
 			explanation,
 			difficulty,
-			teacherId,
+			admin,
 		} = ctx.request.body;
-		if (!teacherId) {
+		if (!admin) {
 			response.send(ResponseCode.CLIENT_ERROR, "您还没有登录");
 			return;
 		}
@@ -79,7 +79,7 @@ class AFQController {
 			correctAnswer,
 			explanation,
 			difficulty,
-			teacherId,
+      admin,
 		};
 		let { code, msg, data } = await createAFQ(insert);
 		response.send(code, msg, data);
@@ -101,9 +101,9 @@ class AFQController {
 			correctAnswer,
 			explanation,
 			difficulty,
-			teacherId,
+      admin,
 		} = ctx.request.body;
-		if (!teacherId) {
+		if (!admin) {
 			response.send(ResponseCode.CLIENT_ERROR, "您还没有登录");
 			return;
 		}
@@ -139,7 +139,7 @@ class AFQController {
 				correctAnswer,
 				explanation,
 				difficulty,
-				teacherId,
+        admin,
 			},
 		};
 		let { code, msg, data } = await updateAFQ(body);

@@ -3,6 +3,8 @@ import judgeController from '../../api/JudgeController'
 
 const router = new Router()
 
+router.prefix('/question-bank')
+
 // 查询判断信息
 router.get('/judges', judgeController.getJudge)
 

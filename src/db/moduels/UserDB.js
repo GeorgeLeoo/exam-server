@@ -191,9 +191,9 @@ export const updateUser = function (body) {
           resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
         }
         if (users.nModified === 1) {
-          resolve({ code: ResponseCode.SERVICE_ERROR, msg: '更新成功', data: [] })
+          resolve({ code: ResponseCode.SUCCESS, msg: '更新成功', data: [] })
         } else {
-          resolve({ code: ResponseCode.SUCCESS, msg: '更新失败', data: [] })
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: '更新失败', data: [] })
         }
       })
     }

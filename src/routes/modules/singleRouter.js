@@ -3,6 +3,8 @@ import singleController from '../../api/SingleController'
 
 const router = new Router()
 
+router.prefix('/question-bank')
+
 // 查询单选信息
 router.get('/singles', singleController.getSingle)
 

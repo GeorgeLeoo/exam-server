@@ -8,7 +8,10 @@ const Singles = new Schema({
   question: {
     type: String
   },
-  subjectId: String,
+  subjectId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Subjects'
+  },
   knowledgePoint: String,
   pic: String,
   a: String,
@@ -18,7 +21,10 @@ const Singles = new Schema({
   correctAnswer: String,
   explanation: String,
   difficulty: String,
-  teacherId: String,
+  admin: {
+    type: Schema.Types.ObjectId,
+    ref: 'Admins'
+  },
   /**
    * 数据状态
    * 0 表示存在
@@ -38,4 +44,4 @@ const Singles = new Schema({
   }
 })
 
-module.exports = db.model('Single', Singles)
+module.exports = db.model('Singles', Singles)

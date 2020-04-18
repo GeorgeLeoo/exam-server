@@ -3,6 +3,8 @@ import afqController from '../../api/AFQController'
 
 const router = new Router()
 
+router.prefix('/question-bank')
+
 // 查询单选信息
 router.get('/afqs', afqController.getAFQ)
 

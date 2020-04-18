@@ -3,6 +3,8 @@ import completionController from '../../api/CompletionController'
 
 const router = new Router()
 
+router.prefix('/question-bank')
+
 // 查询单选信息
 router.get('/completions', completionController.getCompletion)
 

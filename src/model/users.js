@@ -2,7 +2,7 @@ import db from './../db/conn'
 const Schema = db.Schema
 
 /**
- * 考生
+ * 管理员
  */
 const Users = new Schema({
   username: {
