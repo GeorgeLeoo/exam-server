@@ -22,24 +22,17 @@ const app = new Koa()
 
 const isDevMode = (process.env.NODE_ENV !== 'production')
 
-// app.use(function * (next) {
-//   try {
-//     yield * next
-//   } catch (e) {
-//     let status = e.status || 500
-//     let message = e.message || '服务器错误'
-//     this.body = {
-//       'code': status,
-//       'msg': message
-//     }
-//   }
-// })
-
 const jwt = JWT({ secret: config.JWT_SECRET }).unless({ path: config.UN_AUTHENTICATION })
 
 // koa-compose 集成中间件
 const middleware = compose([
-  koaBody(),
+  koaBody({
+    multipart: true,
+    formidable: {
+      keepExtensions: true,
+      maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
+    }
+  }),
   statics(path.join(__dirname, '../public')),
   cors(),
   json({ pretty: false, param: 'pretty' }),
