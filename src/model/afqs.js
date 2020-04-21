@@ -15,7 +15,7 @@ const Afqs = new Schema({
   knowledgePoint: String,
   correctAnswer: '',
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'

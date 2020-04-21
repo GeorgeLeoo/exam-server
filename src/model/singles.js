@@ -20,7 +20,7 @@ const Singles = new Schema({
   d: String,
   correctAnswer: String,
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'

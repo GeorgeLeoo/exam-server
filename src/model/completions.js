@@ -15,7 +15,7 @@ const Completions = new Schema({
   knowledgePoint: String,
   correctAnswer: String,
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'

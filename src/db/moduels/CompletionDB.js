@@ -23,7 +23,10 @@ export const getCompletions = function (query) {
   return new Promise(async (resolve) => {
     const count = await getCount(query.condition)
     Completions.find(query.condition, { isDelete: 0, __v: 0 })
-      .populate([{ path: 'admin', select: { username: 1, _id: 0 } }, { path: 'subjectId', select: { name: 1, _id: 1 } }])
+      .populate([{ path: 'admin', select: { username: 1, _id: 0 } }, {
+        path: 'subjectId',
+        select: { name: 1, _id: 1 }
+      }])
       .limit(parseInt(query.page.limit))
       .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
       .sort({ _id: -1 })
@@ -114,5 +117,31 @@ export const deleteCompletion = function (query) {
         }
       }
     )
+  })
+}
+
+/**
+ * 考点查询
+ * @param query
+ * @returns {Promise<unknown>}
+ */
+export const getKnowledgePointFromCompletion = function (query) {
+  return new Promise(async (resolve) => {
+    const count = await getCount(query.condition)
+    Completions.find(query.condition, { isDelete: 0, __v: 0 })
+      .limit(parseInt(query.page.limit))
+      .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
+      .sort({ _id: -1 })
+      .exec((err, knowledgePoints) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err, data: { list: [], total: 0 } })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: knowledgePoints,
+            total: count
+          }
+        })
+      })
   })
 }

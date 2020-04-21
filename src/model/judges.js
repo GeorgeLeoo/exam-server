@@ -15,7 +15,7 @@ const Judges = new Schema({
   knowledgePoint: String,
   correctAnswer: Number,
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'

@@ -15,4 +15,7 @@ router.patch('/papers', paperController.updatePaper)
 // 删除试卷
 router.delete('/papers', paperController.deletePaper)
 
+// 查询考点
+router.get('/papers/knowledge-points', paperController.getKnowledgePoint)
+
 export default router

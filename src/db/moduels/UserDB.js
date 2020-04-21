@@ -31,9 +31,11 @@ export const login = function (query) {
         }
         if (Utils.isEmptyObject(users)) {
           resolve({ code: ResponseCode.CLIENT_ERROR, msg: '账号或密码不正确' })
+          return
         }
         if (users.state === 1) {
           resolve({ code: ResponseCode.SUCCESS, msg: '该账号已锁定' })
+          return
         }
         const data = {
           uid: users._id,

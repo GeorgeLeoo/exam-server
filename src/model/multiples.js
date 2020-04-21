@@ -18,7 +18,7 @@ const Multiples = new Schema({
   d: String,
   correctAnswer: Array,
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'
