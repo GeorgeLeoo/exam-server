@@ -20,7 +20,7 @@ class PaperController {
    */
   async getPaper (ctx) {
     const response = new Response(ctx)
-    const { paperName, subject, paperType, testType, limit, page } = ctx.request.query
+    const { paperName, subject, paperType, type, testType, limit, page } = ctx.request.query
     if (!limit && limit > 0) {
       response.send(ResponseCode.CLIENT_ERROR, '页面大小必须大于0')
       return
@@ -30,6 +30,7 @@ class PaperController {
       return
     }
     const condition = { isDelete: 0 }
+    type === 'SIMPLE' && (condition.testType = 0)
     paperName && (condition.paperName = new RegExp(paperName))
     subject && (condition.subject = subject)
     paperType && (condition.paperType = paperType)
@@ -37,6 +38,7 @@ class PaperController {
     let { code, msg, data } = await getPapers({
       condition,
       page: { limit, page },
+      type
     })
     response.send(code, msg, data)
   }

@@ -22,16 +22,20 @@ const getCount = function (condition) {
 export const getPapers = function (query) {
   return new Promise(async (resolve) => {
     const count = await getCount(query.condition)
-    Papers.find(query.condition, { isDelete: 0, __v: 0 })
-      .populate([
-        { path: 'admin', select: { username: 1, _id: 0 } },
-        { path: 'subject', select: { name: 1, _id: 1 } },
-        { path: 'single', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] },
+    let select = { isDelete: 0, __v: 0 }
+    const populates = [
+      { path: 'admin', select: { username: 1, _id: 0 } },
+      { path: 'subject', select: { name: 1, _id: 1 } },
+    ]
+    if (query.type !== 'SIMPLE') {
+      populates.concat([{ path: 'single', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] },
         { path: 'multiple', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] },
         { path: 'judge', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] },
         { path: 'completion', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] },
-        { path: 'afq', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] },
-        ])
+        { path: 'afq', select: { isDelete: 0, __v: 0 }, subPopulate: [{ path: 'admin', select: { username: 1, _id: 0 }}, { path: 'subjectId', select: { name: 1, _id: 1 } }] }])
+    }
+    Papers.find(query.condition, select)
+      .populate(populates)
       .limit(parseInt(query.page.limit))
       .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
       .sort({ _id: -1 })
