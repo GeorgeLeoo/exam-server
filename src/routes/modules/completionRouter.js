@@ -17,4 +17,7 @@ router.patch('/completions', completionController.updateCompletion)
 // 删除单选
 router.delete('/completions', completionController.deleteCompletion)
 
+// 查询考点
+router.get('/completions/knowledge-points', completionController.getKnowledgePoint)
+
 export default router

@@ -15,7 +15,8 @@ export const JWT_SECRET = 'a&*38QthAK8ui2RwISGLotgq^3%^$zvA3A6Hfr8MF$jM*HY4*dWcw
 export const TOKEN_EXP = Math.floor(Date.now() / 1000) + 60 * 60 * 24
 
 // 不用授权的api
-export const UN_AUTHENTICATION = [/\/users\/login/, /\/users\/register/]
+export const UN_AUTHENTICATION_API_REG = [/\/user\/login/, /\/user\/register/]
+export const UN_AUTHENTICATION_API = ['/user/login', '/user/register']
 
 // 媒体文件基础路径
 export const ABSOLUTE_BASE_PATH = '/root/www/media'
@@ -37,7 +38,8 @@ export default {
   DB_URL,
   REDIS,
   JWT_SECRET,
-  UN_AUTHENTICATION,
+  UN_AUTHENTICATION_API,
+  UN_AUTHENTICATION_API_REG,
   TOKEN_EXP,
   ABSOLUTE_BASE_PATH,
   RELATIVE_BASE_PATH,

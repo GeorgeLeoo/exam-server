@@ -15,7 +15,7 @@ class ScoreController {
 	 */
 	async getScore(ctx) {
 		const response = new Response(ctx);
-		const { content, author, limit, page } = ctx.request.query;
+		const { content, author, limit, page, status } = ctx.request.query;
 		if (!limit && limit > 0) {
 			response.send(ResponseCode.CLIENT_ERROR, "页面大小必须大于0");
 			return;
@@ -27,6 +27,7 @@ class ScoreController {
 		const condition = { isDelete: 0 };
 		content && (condition.content = name);
 		author && (condition.author = author);
+    status && (condition.status = status);
 		let { code, msg, data } = await getScores({
 			condition,
 			page: { limit, page },

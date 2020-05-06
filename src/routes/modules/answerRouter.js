@@ -10,7 +10,7 @@ router.get('/answers', answerController.getAnswer)
 router.post('/answers', answerController.createAnswer)
 
 // 更新考生答案
-router.patch('/answers', answerController.updateAnswer)
+router.patch('/answers/score', answerController.updateAnswer)
 
 // 删除考生答案
 router.delete('/answers', answerController.deleteAnswer)

@@ -17,4 +17,7 @@ router.patch('/afqs', afqController.updateAFQ)
 // 删除单选
 router.delete('/afqs', afqController.deleteAFQ)
 
+// 查询考点
+router.get('/afqs/knowledge-points', afqController.getKnowledgePoint)
+
 export default router

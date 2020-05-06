@@ -13,6 +13,19 @@ const getCount = function (condition) {
     })
   })
 }
+/**
+ * 查询总数量
+ * @param condition
+ * @returns {Promise<unknown>}
+ */
+const getCountByAggregate = function (condition) {
+  return new Promise(resolve => {
+    Singles.aggregate([{ $match: condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }}])
+      .exec((err, count) => {
+        resolve(count.length)
+      })
+  })
+}
 
 /**
  * 查询单选题
@@ -124,8 +137,8 @@ export const deleteSingle = function (query) {
  */
 export const getKnowledgePointFromSingle = function(query) {
   return new Promise(async (resolve) => {
-    const count = await getCount(query.condition)
-    Singles.find(query.condition, { isDelete: 0, __v: 0 })
+    const count = await getCountByAggregate(query.condition)
+    Singles.aggregate([{ $match: query.condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
       .limit(parseInt(query.page.limit))
       .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
       .sort({ _id: -1 })

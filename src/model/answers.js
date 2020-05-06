@@ -8,8 +8,10 @@ const Answers = new Schema({
   /**
    * [
    *  {
-   *    id: ''  题目的id
-   *    userAnswer: ''  考生的答案
+   *    answer: ''  考生答案
+   *    options: ''  选项
+   *    original: ''  原始题目
+   *    score: ''  分数
    *  }
    * ]
    */
@@ -33,8 +35,14 @@ const Answers = new Schema({
     type: Array,
     default: []
   },
-  studentId: String,
-  paperId: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
+  },
+  paper: {
+    type: Schema.Types.ObjectId,
+    ref: 'Papers'
+  },
   /**
    * 数据状态
    * 0 表示存在

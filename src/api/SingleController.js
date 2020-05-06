@@ -1,8 +1,33 @@
 import Response from "../utils/Response";
 import ResponseCode from "../utils/ResponseCode";
-import { getSingles, createSingle, updateSingle, deleteSingle } from "../db/moduels/SingleDB";
+import {
+  getSingles,
+  createSingle,
+  updateSingle,
+  deleteSingle,
+  getKnowledgePointFromSingle
+} from '../db/moduels/SingleDB'
 
 class SingleController {
+  async getKnowledgePoint (ctx) {
+    const response = new Response(ctx)
+    const { knowledgePoint, limit, page } = ctx.request.query
+    if (!limit && limit > 0) {
+      response.send(ResponseCode.CLIENT_ERROR, '页面大小必须大于0')
+      return
+    }
+    if (!page) {
+      response.send(ResponseCode.CLIENT_ERROR, '当前页面必须大于0')
+      return
+    }
+    const condition = { isDelete: 0 }
+    knowledgePoint && (condition.knowledgePoint = new RegExp(knowledgePoint))
+    let { code, msg, data } = await getKnowledgePointFromSingle({
+      condition,
+      page: { limit, page },
+    })
+    response.send(code, msg, data)
+  }
   /**
    * 获取单选信息
    * @param ctx
@@ -10,7 +35,7 @@ class SingleController {
    */
   async getSingle(ctx) {
     const response = new Response(ctx);
-    const { subjectId, question, limit, page } = ctx.request.query;
+    const { subjectId, knowledgePoint, question, limit, page } = ctx.request.query;
     if (!limit && limit > 0) {
       response.send(ResponseCode.CLIENT_ERROR, "页面大小必须大于0");
       return;
@@ -22,6 +47,7 @@ class SingleController {
     const condition = { isDelete: 0 };
     question && (condition.question = new RegExp(question))
     subjectId && (condition.subjectId = subjectId)
+    knowledgePoint && (condition.knowledgePoint = new RegExp(knowledgePoint))
     let { code, msg, data } = await getSingles({
       condition,
       page: { limit, page },

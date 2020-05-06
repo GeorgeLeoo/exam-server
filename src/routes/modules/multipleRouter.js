@@ -17,4 +17,6 @@ router.patch('/multiples', multipleController.updateMultiple)
 // 删除多选
 router.delete('/multiples', multipleController.deleteMultiple)
 
+// 查询考点
+router.get('/multiples/knowledge-points', multipleController.getKnowledgePoint)
 export default router

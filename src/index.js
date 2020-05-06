@@ -22,7 +22,7 @@ const app = new Koa()
 
 const isDevMode = (process.env.NODE_ENV !== 'production')
 
-const jwt = JWT({ secret: config.JWT_SECRET }).unless({ path: config.UN_AUTHENTICATION })
+const jwt = JWT({ secret: config.JWT_SECRET }).unless({ path: config.UN_AUTHENTICATION_API_REG })
 
 // koa-compose 集成中间件
 const middleware = compose([
@@ -37,9 +37,9 @@ const middleware = compose([
   cors(),
   json({ pretty: false, param: 'pretty' }),
   helmet(),
-  errorHandle,
   // TokenVerifyHandle,
   // jwt,
+  errorHandle,
   router()
 ])
 

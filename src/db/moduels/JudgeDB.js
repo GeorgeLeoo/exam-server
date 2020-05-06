@@ -13,7 +13,14 @@ const getCount = function (condition) {
     })
   })
 }
-
+const getCountByAggregate = function (condition) {
+  return new Promise(resolve => {
+    Judges.aggregate([{ $match: condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }}])
+      .exec((err, count) => {
+        resolve(count.length)
+      })
+  })
+}
 /**
  * 查询判断题
  * @param query
@@ -124,8 +131,8 @@ export const deleteJudge = function (query) {
  */
 export const getKnowledgePointFromJudge = function(query) {
   return new Promise(async (resolve) => {
-    const count = await getCount(query.condition)
-    Judges.find(query.condition, { isDelete: 0, __v: 0 })
+    const count = await getCountByAggregate(query.condition)
+    Judges.aggregate([{ $match: query.condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
       .limit(parseInt(query.page.limit))
       .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
       .sort({ _id: -1 })

@@ -13,7 +13,14 @@ const getCount = function (condition) {
     })
   })
 }
-
+const getCountByAggregate = function (condition) {
+  return new Promise(resolve => {
+    AFQs.aggregate([{ $match: condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }}])
+      .exec((err, count) => {
+        resolve(count.length)
+      })
+  })
+}
 /**
  * 查询解答题
  * @param query
@@ -124,10 +131,8 @@ export const deleteAFQ = function (query) {
  */
 export const getKnowledgePointFromAFQ = function(query) {
   return new Promise(async (resolve) => {
-    const count = await getCount(query.condition)
-    AFQs.find(query.condition, { isDelete: 0, __v: 0 })
-      .limit(parseInt(query.page.limit))
-      .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
+    const count = await getCountByAggregate(query.condition)
+    AFQs.aggregate([{ $match: query.condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
       .sort({ _id: -1 })
       .exec((err, knowledgePoints) => {
         if (err) {

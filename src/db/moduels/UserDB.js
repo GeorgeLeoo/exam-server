@@ -113,7 +113,7 @@ export const hasUserEmail = function (email) {
  */
 export const getUserInfo = function (uid) {
   return new Promise(resolve => {
-    Users.findById(uid, { __v: 0, isDelete: 0, password: 0 },(err, users) => {
+    Users.findById(uid, { __v: 0, isDelete: 0, password: 0 },(err, user) => {
       if (err) {
         resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
         return

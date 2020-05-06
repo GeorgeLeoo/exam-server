@@ -11,6 +11,7 @@ const Papers = new Schema({
     ref: 'Admins'
   },
   testType: Number, // 0 模拟考试， 1 正式考试
+  password: String,
   paperName: String,
   subject: {
     type: Schema.Types.ObjectId,
@@ -22,7 +23,10 @@ const Papers = new Schema({
   difficulty: Number,
   attention: String,
   paperType: Number,  // 0 固定组卷，1 随机组卷
-  count: Number,
+  count: {
+    type: Number,
+    default: 0
+  },
   total: Number,
   singleNumber: Number,
   singleScore: Number,
