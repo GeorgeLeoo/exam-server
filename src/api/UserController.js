@@ -42,7 +42,7 @@ class UserController {
    */
   async register (ctx) {
     const { body } = ctx.request
-    const { username, password, rePassword, email } = body
+    const { username, password, email } = body
     const response = new Response(ctx)
     if (!username) {
       response.send(ResponseCode.CLIENT_ERROR, '账号不能为空')
@@ -50,14 +50,6 @@ class UserController {
     }
     if (!password) {
       response.send(ResponseCode.CLIENT_ERROR, '密码不能为空')
-      return
-    }
-    if (!rePassword) {
-      response.send(ResponseCode.CLIENT_ERROR, '确认密码不能为空')
-      return
-    }
-    if (rePassword !== password) {
-      response.send(ResponseCode.CLIENT_ERROR, '两次密码不一致')
       return
     }
     if (!email) {

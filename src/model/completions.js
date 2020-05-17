@@ -12,10 +12,11 @@ const Completions = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Subjects'
   },
+  picture: String,
   knowledgePoint: String,
   correctAnswer: String,
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'

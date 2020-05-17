@@ -2,24 +2,26 @@ import db from './../db/conn'
 const Schema = db.Schema
 
 /**
- * 判断题
+ * 错题
  */
-const Judges = new Schema({
-  question: {
-    type: String
-  },
-  subjectId: {
+const Wrongs = new Schema({
+  subject: String,  // 科目
+  knowledgePoint: String, // 考点
+  question: String, // 题目
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'Subjects'
+    ref: 'Users'
   },
-  knowledgePoint: String,
-  correctAnswer: Number,
-  explanation: String,
-  difficulty: Number,
-  admin: {
+  original: Object,  // 来源
+  paper: {  // 试卷信息
     type: Schema.Types.ObjectId,
-    ref: 'Admins'
+    ref: 'Papers'
   },
+  count: {
+    type:Number,
+    default: 1
+  },
+  type: String,
   /**
    * 数据状态
    * 0 表示存在
@@ -39,4 +41,4 @@ const Judges = new Schema({
   }
 })
 
-module.exports = db.model('Judges', Judges)
+module.exports = db.model('Wrongs', Wrongs)

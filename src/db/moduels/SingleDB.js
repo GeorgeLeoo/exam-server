@@ -13,6 +13,19 @@ const getCount = function (condition) {
     })
   })
 }
+/**
+ * 查询总数量
+ * @param condition
+ * @returns {Promise<unknown>}
+ */
+const getCountByAggregate = function (condition) {
+  return new Promise(resolve => {
+    Singles.aggregate([{ $match: condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }}])
+      .exec((err, count) => {
+        resolve(count.length)
+      })
+  })
+}
 
 /**
  * 查询单选题
@@ -114,5 +127,31 @@ export const deleteSingle = function (query) {
         }
       }
     )
+  })
+}
+
+/**
+ * 考点查询
+ * @param query
+ * @returns {Promise<unknown>}
+ */
+export const getKnowledgePointFromSingle = function(query) {
+  return new Promise(async (resolve) => {
+    const count = await getCountByAggregate(query.condition)
+    Singles.aggregate([{ $match: query.condition }, { $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
+      .limit(parseInt(query.page.limit))
+      .skip((parseInt(query.page.page) - 1) * parseInt(query.page.limit))
+      .sort({ _id: -1 })
+      .exec((err, knowledgePoints) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err, data: { list: [], total: 0 } })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: knowledgePoints,
+            total: count
+          }
+        })
+      })
   })
 }

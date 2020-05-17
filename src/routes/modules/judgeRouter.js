@@ -17,4 +17,6 @@ router.patch('/judges', judgeController.updateJudge)
 // 删除判断
 router.delete('/judges', judgeController.deleteJudge)
 
+// 查询考点
+router.get('/judges/knowledge-points', judgeController.getKnowledgePoint)
 export default router

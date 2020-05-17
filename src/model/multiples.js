@@ -11,14 +11,14 @@ const Multiples = new Schema({
     ref: 'Subjects'
   },
   knowledgePoint: String,
-  pic: String,
+  picture: String,
   a: String,
   b: String,
   c: String,
   d: String,
   correctAnswer: Array,
   explanation: String,
-  difficulty: String,
+  difficulty: Number,
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admins'

@@ -13,6 +13,9 @@ import afqRouter from './modules/afqRouter'
 import paperRouter from './modules/paperRouter'
 import answerRouter from './modules/answerRouter'
 import scoreRouter from './modules/scoreRouter'
+import uploadRouter from './modules/uploadRouter'
+import wrongRouter from './modules/wrongRouter'
 
 export default combineRoutes(publicRouter, userRouter, adminRouter, noticeRouter, subjectRouter, singleRouter,
-  multipleRouter, judgeRouter, completionRouter, afqRouter, paperRouter, scoreRouter, answerRouter)
+  multipleRouter, judgeRouter, completionRouter, afqRouter, paperRouter, scoreRouter, answerRouter,
+  uploadRouter, wrongRouter)

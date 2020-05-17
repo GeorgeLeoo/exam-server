@@ -5,14 +5,28 @@ const Schema = db.Schema
  * 分数
  */
 const Scores = new Schema({
-  studentId: String,
-  paperId: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
+  },
+  answer: {
+    type: Schema.Types.ObjectId,
+    ref: 'Answers'
+  },
+  paper: {
+    type: Schema.Types.ObjectId,
+    ref: 'Papers'
+  },
   startTime: Number,
   endTime: Number,
   diffTime: Number,
   score: Number,
   correctNumber: Number,
-  status: Number,
+  // 1 未批改 0 已批改
+  status: {
+    type: Number,
+    default: 1
+  },
   /**
    * 数据状态
    * 0 表示存在

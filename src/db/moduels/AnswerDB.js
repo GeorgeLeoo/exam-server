@@ -31,7 +31,7 @@ export const createAnswer = function (body) {
 			if (err) {
 				resolve({ code: ResponseCode.SERVICE_ERROR, msg: err });
 			}
-			resolve({ code: ResponseCode.SUCCESS, msg: "添加成功", data: [] });
+			resolve({ code: ResponseCode.SUCCESS, msg: "交卷成功", data: { _id: answers[0]._id } });
 		});
 	});
 };
@@ -49,13 +49,13 @@ export const updateAnswer = function (body) {
 			}
 			if (answers.nModified === 1) {
 				resolve({
-					code: ResponseCode.SERVICE_ERROR,
+					code: ResponseCode.SUCCESS,
 					msg: "更新成功",
 					data: [],
 				});
 			} else {
 				resolve({
-					code: ResponseCode.SUCCESS,
+					code: ResponseCode.SERVICE_ERROR,
 					msg: "更新失败",
 					data: [],
 				});

@@ -1,6 +1,6 @@
 import Response from "../utils/Response";
 import ResponseCode from "../utils/ResponseCode";
-import { getAFQs, createAFQ, updateAFQ, deleteAFQ } from "../db/moduels/AFQDB";
+import { getAFQs, createAFQ, updateAFQ, deleteAFQ, getKnowledgePointFromAFQ } from '../db/moduels/AFQDB'
 
 class AFQController {
 	/**
@@ -10,7 +10,7 @@ class AFQController {
 	 */
 	async getAFQ(ctx) {
 		const response = new Response(ctx);
-		const { subjectId, question, limit, page } = ctx.request.query;
+		const { subjectId, knowledgePoint, question, limit, page } = ctx.request.query;
 		if (!limit && limit > 0) {
 			response.send(ResponseCode.CLIENT_ERROR, "页面大小必须大于0");
 			return;
@@ -22,6 +22,7 @@ class AFQController {
 		const condition = { isDelete: 0 };
     question && (condition.question = new RegExp(question))
     subjectId && (condition.subjectId = subjectId)
+    knowledgePoint && (condition.knowledgePoint = new RegExp(knowledgePoint))
 		let { code, msg, data } = await getAFQs({
 			condition,
 			page: { limit, page },
@@ -39,11 +40,13 @@ class AFQController {
 		let {
 			question,
 			subjectId,
+      picture,
 			knowledgePoint,
 			correctAnswer,
 			explanation,
 			difficulty,
 			admin,
+      keywords
 		} = ctx.request.body;
 		if (!admin) {
 			response.send(ResponseCode.CLIENT_ERROR, "您还没有登录");
@@ -75,11 +78,13 @@ class AFQController {
 		const insert = {
 			question,
 			subjectId,
+      picture,
 			knowledgePoint,
 			correctAnswer,
 			explanation,
 			difficulty,
       admin,
+      keywords
 		};
 		let { code, msg, data } = await createAFQ(insert);
 		response.send(code, msg, data);
@@ -102,6 +107,7 @@ class AFQController {
 			explanation,
 			difficulty,
       admin,
+      keywords
 		} = ctx.request.body;
 		if (!admin) {
 			response.send(ResponseCode.CLIENT_ERROR, "您还没有登录");
@@ -135,11 +141,13 @@ class AFQController {
 			update: {
 				question,
 				subjectId,
+        picture,
 				knowledgePoint,
 				correctAnswer,
 				explanation,
 				difficulty,
         admin,
+        keywords
 			},
 		};
 		let { code, msg, data } = await updateAFQ(body);
@@ -157,6 +165,25 @@ class AFQController {
 		let { code, msg, data } = await deleteAFQ({ _id });
 		response.send(code, msg, data);
 	}
+  async getKnowledgePoint (ctx) {
+    const response = new Response(ctx)
+    const { knowledgePoint, limit, page } = ctx.request.query
+    if (!limit && limit > 0) {
+      response.send(ResponseCode.CLIENT_ERROR, '页面大小必须大于0')
+      return
+    }
+    if (!page) {
+      response.send(ResponseCode.CLIENT_ERROR, '当前页面必须大于0')
+      return
+    }
+    const condition = { isDelete: 0 }
+    knowledgePoint && (condition.knowledgePoint = new RegExp(knowledgePoint))
+    let { code, msg, data } = await getKnowledgePointFromAFQ({
+      condition,
+      page: { limit, page },
+    })
+    response.send(code, msg, data)
+  }
 }
 
 const afqController = new AFQController();
