@@ -51,18 +51,23 @@ class Utils {
    */
   saveFile(file, path) {
     return new Promise((resolve, reject) => {
+      const pathArray = path.split('/')
+      const length = pathArray.length
+      const _path = '/img/' + pathArray[length - 1]
+      
       // 创建可读流
       let render = fs.createReadStream(file.path);
       // 创建写入流
       let upStream = fs.createWriteStream(path);
+      
       render.pipe(upStream);
       upStream.on('finish', () => {
-        resolve(path)
+        resolve(_path)
       });
       upStream.on('error', (err) => {
         reject(err)
       });
-      resolve(path)
+      resolve(_path)
     })
   }
   deepClone(obj = {}) {

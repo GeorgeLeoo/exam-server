@@ -27,4 +27,6 @@ router.get('/papers/knowledge-points', paperController.getKnowledgePoint)
 // 验证密码
 router.post('/papers/exam', paperController.verifyPaperPassword)
 
+router.get('/papers/hots', paperController.getHotPapers)
+
 export default router

@@ -40,6 +40,7 @@ class AFQController {
 		let {
 			question,
 			subjectId,
+      picture,
 			knowledgePoint,
 			correctAnswer,
 			explanation,
@@ -77,6 +78,7 @@ class AFQController {
 		const insert = {
 			question,
 			subjectId,
+      picture,
 			knowledgePoint,
 			correctAnswer,
 			explanation,
@@ -139,6 +141,7 @@ class AFQController {
 			update: {
 				question,
 				subjectId,
+        picture,
 				knowledgePoint,
 				correctAnswer,
 				explanation,

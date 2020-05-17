@@ -10,4 +10,6 @@ router.post('/wrongs', wrongController.createWrong)
 
 router.get('/wrongs/type', wrongController.getWrongsByType)
 
+router.get('/wrongs/list', wrongController.getKnowledgePointList)
+
 export default router

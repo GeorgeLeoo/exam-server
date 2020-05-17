@@ -8,7 +8,7 @@ import {
   deletePaper,
   hasPaperPassword,
   verifyPaperPassword,
-  getWrongKnowledgePoint
+  getWrongKnowledgePoint, getHotPapers
 } from '../db/moduels/PaperDB'
 import { getKnowledgePointFromSingle } from './../db/moduels/SingleDB'
 import { getKnowledgePointFromMultiple } from './../db/moduels/MultipleDB'
@@ -43,6 +43,16 @@ class PaperController {
       condition,
       page: { limit, page },
       type
+    })
+    response.send(code, msg, data)
+  }
+  
+  async getHotPapers (ctx) {
+    const response = new Response(ctx)
+    const condition = { isDelete: 0 }
+    condition.testType = 0
+    let { code, msg, data } = await getHotPapers({
+      condition
     })
     response.send(code, msg, data)
   }

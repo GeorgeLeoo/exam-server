@@ -4,6 +4,7 @@ import {
   getWrongSubject,
   getWrongKnowledgePoint, getWrongs, createWrong
 } from '../db/moduels/WrongDB'
+import { getKnowledgePointList } from '../db/moduels/WrongDB'
 
 class WrongController {
   /**
@@ -63,6 +64,12 @@ class WrongController {
     const response = new Response(ctx)
     const body = ctx.request.body
     let { code, msg, data } = await createWrong(body)
+    response.send(code, msg, data)
+  }
+  
+  async getKnowledgePointList (ctx) {
+    const response = new Response(ctx)
+    let { code, msg, data } = await getKnowledgePointList()
     response.send(code, msg, data)
   }
 }

@@ -66,6 +66,7 @@ class SingleController {
       question,
       subjectId,
       knowledgePoint,
+      picture,
       a,
       b,
       c,
@@ -122,6 +123,7 @@ class SingleController {
       question,
       subjectId,
       knowledgePoint,
+      picture,
       a,
       b,
       c,
@@ -210,12 +212,14 @@ class SingleController {
         b,
         c,
         d,
+        picture,
         correctAnswer,
         explanation,
         difficulty,
         admin,
       },
     };
+    console.log(picture)
     let { code, msg, data } = await updateSingle(body);
     response.send(code, msg, data);
   }

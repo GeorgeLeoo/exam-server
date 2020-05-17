@@ -11,7 +11,7 @@ const Multiples = new Schema({
     ref: 'Subjects'
   },
   knowledgePoint: String,
-  pic: String,
+  picture: String,
   a: String,
   b: String,
   c: String,

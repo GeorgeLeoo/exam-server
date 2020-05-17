@@ -95,6 +95,32 @@ export const getPapers = function (query) {
   })
 }
 
+export const getHotPapers = function (query) {
+  return new Promise(async (resolve) => {
+    let select = { isDelete: 0, __v: 0 }
+    const populates = [
+      { path: 'admin', select: { username: 1, _id: 0 } },
+      { path: 'subject', select: { name: 1, _id: 1 } },
+    ]
+    Papers.find(query.condition, select)
+      .populate(populates)
+      .limit(10)
+      .skip(0)
+      .sort({ count: -1 })
+      .exec((err, papers) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: papers,
+            total: papers.length
+          }
+        })
+      })
+  })
+}
+
 export const getWrongKnowledgePoint = function (query) {
   return new Promise(resolve => {
     Papers.aggregate([{ $match: query }, {
@@ -409,3 +435,4 @@ export const verifyPaperPassword = function (condition) {
       })
   })
 }
+

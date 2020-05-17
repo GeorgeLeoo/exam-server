@@ -203,3 +203,21 @@ export const deleteWrong = function (query) {
     )
   })
 }
+
+export const getKnowledgePointList = function() {
+  return new Promise(async (resolve) => {
+    Wrongs.aggregate([{ $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
+      .sort({ _id: -1 })
+      .exec((err, knowledgePoints) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err, data: { list: [], total: 0 } })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: knowledgePoints,
+            total: knowledgePoints.length
+          }
+        })
+      })
+  })
+}

@@ -14,6 +14,7 @@ const Afqs = new Schema({
   },
   knowledgePoint: String,
   correctAnswer: '',
+  picture: String,
   keywords: String,
   explanation: String,
   difficulty: Number,

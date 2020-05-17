@@ -65,6 +65,7 @@ class CompletionController {
     let {
       question,
       subjectId,
+      picture,
       knowledgePoint,
       correctAnswer,
       explanation,
@@ -101,6 +102,7 @@ class CompletionController {
     const insert = {
       question,
       subjectId,
+      picture,
       knowledgePoint,
       correctAnswer,
       explanation,
@@ -161,6 +163,7 @@ class CompletionController {
       update: {
         question,
         subjectId,
+        picture,
         knowledgePoint,
         correctAnswer,
         explanation,
