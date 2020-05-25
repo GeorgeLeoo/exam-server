@@ -31,7 +31,7 @@ export const getPapers = function (query) {
     const count = await getCount(query.condition)
     let select = { isDelete: 0, __v: 0 }
     const populates = [
-      { path: 'admin', select: { username: 1, _id: 0 } },
+      { path: 'admin', select: { username: 1, _id: 1 } },
       { path: 'subject', select: { name: 1, _id: 1 } },
     ]
     if (!query.type) {

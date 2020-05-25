@@ -29,4 +29,6 @@ router.put('/status', adminController.openOrCloseAdminUser)
 // 更新用户
 router.patch('/info', adminController.updateAdminUser)
 
+router.get('/all', adminController.getAdminAllUser)
+
 export default router

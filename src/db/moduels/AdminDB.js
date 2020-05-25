@@ -153,6 +153,27 @@ export const getAdminUserInfos = function (query) {
   })
 }
 /**
+ * 获取所有管理员信息
+ * @param query
+ * @returns {Promise<unknown>}
+ */
+export const getAdminAllUser = function (query) {
+  return new Promise(async resolve => {
+    Admins.find(query.condition, { isDelete: 0, __v: 0, password: 0 })
+      .sort({ _id: -1 })
+      .exec((err, admins) => {
+        if (err) {
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err })
+        }
+        resolve({
+          code: ResponseCode.SUCCESS, data: {
+            list: admins
+          }
+        })
+      })
+  })
+}
+/**
  * 通过用户名获取管理员信息
  * @returns {Promise<unknown>}
  */

@@ -4,6 +4,7 @@ import Response from '../utils/Response'
 import ResponseCode from '../utils/ResponseCode'
 import {
   getAdminUserInfo,
+  getAdminAllUser,
   hasAdminEmail,
   hasAdminUsername,
   login,
@@ -144,6 +145,24 @@ class AdminController {
       page: { limit, page },
     }
     let { code, msg, data } = await getAdminUserInfos(query)
+    response.send(code, msg, data)
+  }
+  
+  /**
+   * 查询所有用户信息
+   * @param ctx
+   * @returns {Promise<void>}
+   */
+  async getAdminAllUser (ctx) {
+    const response = new Response(ctx)
+    
+    // 查询条件，默认是没有被删除的
+    const condition = { isDelete: 0 }
+    
+    const query = {
+      condition
+    }
+    let { code, msg, data } = await getAdminAllUser(query)
     response.send(code, msg, data)
   }
   
