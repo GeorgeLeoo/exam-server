@@ -1,6 +1,6 @@
 import redis from 'redis'
 import { promisifyAll } from 'bluebird'
-import config from './index'
+import config from '../index'
 
 const options = {
   host: config.REDIS.host,

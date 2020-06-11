@@ -1,10 +1,13 @@
-import send from './../config/MailConfig'
+import send from './../config/modules/MailConfig'
 import moment from 'moment'
-import Response from "../utils/Response";
+import Response from './../utils/Response'
+import ResponseCode from './../utils/ResponseCode'
 
 class LoginController {
-  async forget(ctx) {
-    const {body} = ctx.request
+  async login (ctx) {}
+
+  async forget (ctx) {
+    const { body } = ctx.request
     try {
       // 查询数据库有没有该邮箱
       const sendInfo = {
@@ -15,7 +18,7 @@ class LoginController {
       }
       let result = await send(sendInfo)
       const response = new Response(ctx)
-      response.send(200,  '邮件发送成功', result)
+      response.send(ResponseCode.SUCCESS, '邮件发送成功', result)
     } catch (e) {
       console.log(e)
     }

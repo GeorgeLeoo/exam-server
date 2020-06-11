@@ -17,14 +17,14 @@ const webpackConfig = {
         filename: '[name].bundle.js',
         path: utils.DIST_PATH
     },
-    module: { 
+    module: {
         rules: [
             {
                 test: '/\.(js|jsx)$/',
                 use: {
                     loader: 'babel-loader'
                 },
-                exclude: [path.join(utils.APP_PATH, './node_modules')] 
+                exclude: [path.join(utils.APP_PATH, './node_modules')]
             }
         ]
     },

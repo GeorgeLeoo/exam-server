@@ -1,15 +1,13 @@
 class Response {
-  constructor(ctx){
+  constructor (ctx) {
     this.ctx = ctx
   }
-  
-  send(code = 200, msg = '', data) {
+
+  send (code=200,  msg = '', data = []) {
     let body = {
       code,
-      msg
-    }
-    if (typeof data !== 'undefined') {
-      Object.assign(body, { data })
+      msg,
+      data
     }
     this.ctx.status = code
     this.ctx.body = body

@@ -23,7 +23,7 @@ const middleware = compose([
   koaBody(),
   statics(path.join(__dirname, '../public')),
   cors(),
-  json({pretty: false, param: 'pretty'}),
+  json({ pretty: false, param: 'pretty' }),
   helmet(),
   router()
 ])
