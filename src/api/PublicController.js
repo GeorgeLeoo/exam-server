@@ -8,6 +8,7 @@ class PublicController {
 
   async getCaptcha (ctx) {
     const body = ctx.request.query
+    
     const response = new Response(ctx)
     const newCaptcha = svgCaptcha.create(captcha)
     setValue(body.sid, newCaptcha.text, 15)

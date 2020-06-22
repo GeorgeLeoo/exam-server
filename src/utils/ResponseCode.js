@@ -1,8 +1,9 @@
 class ResponseCode {}
 
-ResponseCode.SUCCESS = 200  // 成功
-ResponseCode.CLIENT_ERROR = 402  // 失败，参数不正确
-ResponseCode.SERVER_ERROR = 500  // 服务器错误
-ResponseCode.UNAUTHORIZED = 401  // 没有权限,未登陆
+ResponseCode.SUCCESS = 200  //  请求成功
+ResponseCode.FAIL = 900  //  获取数据失败
+ResponseCode.UN_AUTHORIZATION = 401  // 客户端未授权、未登录
+ResponseCode.CLIENT_ERROR = 406 //  客户端错误，未传递正确的参数
+ResponseCode.SERVICE_ERROR = 500  //  服务器内部错误
 
 export default ResponseCode
