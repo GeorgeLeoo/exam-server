@@ -47,3 +47,4 @@ const Scores = new Schema({
 })
 
 module.exports = db.model('Scores', Scores)
+console.log(db)

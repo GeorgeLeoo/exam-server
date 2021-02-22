@@ -204,20 +204,28 @@ export const deleteWrong = function (query) {
   })
 }
 
-export const getKnowledgePointList = function() {
+export const getKnowledgePointList = function(query) {
   return new Promise(async (resolve) => {
-    Wrongs.aggregate([{ $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
-      .sort({ _id: -1 })
-      .exec((err, knowledgePoints) => {
+    // Wrongs.aggregate([{ $group: { _id: '$knowledgePoint', total: { $sum: 1 } }} ])
+    //   .sort({ _id: -1 })
+    //   .exec((err, knowledgePoints) => {
+    //     if (err) {
+    //       resolve({ code: ResponseCode.SERVICE_ERROR, msg: err, data: { list: [], total: 0 } })
+    //     }
+    //     resolve({
+    //       code: ResponseCode.SUCCESS, data: {
+    //         list: knowledgePoints,
+    //         total: knowledgePoints.length
+    //       }
+    //     })
+    //   })
+    Wrongs.find(query, (err, doc) => {
         if (err) {
-          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err, data: { list: [], total: 0 } })
+          resolve({ code: ResponseCode.SERVICE_ERROR, msg: err, data: [] })
         }
         resolve({
-          code: ResponseCode.SUCCESS, data: {
-            list: knowledgePoints,
-            total: knowledgePoints.length
-          }
+          code: ResponseCode.SUCCESS, data: doc
         })
-      })
+    })
   })
 }
